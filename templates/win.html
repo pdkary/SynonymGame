@@ -1,0 +1,36 @@
+<head>
+    <style>
+        .difficulty_buttons > form {
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>WINNER</h1>
+
+    <h2>Start new game with difficulty:</h2>
+    <div class="difficulty_buttons">
+        <form method="post">
+            <input type="submit" name="difficulty" value="3">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="4">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="5">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="6">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="7">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="8">
+        </form>
+    </div>
+    <h2>Difficulty</h2>: {{difficulty}}</h2>
+    <h2>Your Path: {{user_path}}</h2>
+    <h2>Ideal Path: {{ideal_path}}</h2>
+    <h2>Your Time: {{game_time}}</h2>
+</body>

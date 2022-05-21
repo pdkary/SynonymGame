@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 activegames = {}
 
-def get_template(state: GameState):
+def render_game_template(state: GameState):
     return render_template('game.html',
         difficulty=state.difficulty, 
         starting_word=state.starting_word, 
@@ -16,6 +16,13 @@ def get_template(state: GameState):
         current_word = state.current_word, 
         synonyms = state.current_syns,
         ideal_path = " -> ".join(state.ideal_path))
+
+def render_win_template(state: GameState):
+    return render_template('win.html',
+        difficulty=state.difficulty, 
+        ideal_path = " -> ".join(state.ideal_path),
+        user_path=" -> ".join(state.path),
+        game_time=state.game_total_time)
 
 @app.route('/')
 def home():
@@ -30,7 +37,7 @@ def newgame(difficulty):
 @app.route('/game', methods=['GET', 'POST'])
 def game():
     addr = request.remote_addr
-    if addr not in activegames:
+    if addr not in activegames or activegames[addr].win:
         return redirect('/')
     activegame = activegames[addr]
 
@@ -42,7 +49,10 @@ def game():
         if 'next_word' in request.form:
             next_word = request.form['next_word']
             activegame.guess(next_word)
-    return get_template(activegame)
+    if activegame.win:
+        return render_win_template(activegame)
+    else:
+        return render_game_template(activegame)
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.
