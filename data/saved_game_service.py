@@ -24,7 +24,7 @@ def get_all_n_length_paths(graph: Graph, n: int):
                 continue
             path = source_paths[target]
             if path is not None and len(path) == n:
-                n_length_paths[source + "->" + target)] = path
+                n_length_paths[source + "->" + target] = path
     return n_length_paths
 
 def update_all_n_length_paths(n_list: List):
@@ -33,10 +33,10 @@ def update_all_n_length_paths(n_list: List):
     for n in n_list:
         n_length_paths = get_all_n_length_paths(graph,n)
         if n in games:
-            games[n].append(n_length_paths)
+            for k,v in  n_length_paths.items():
+                games[n].append((k,v))
         else:
-            games[n] = [n_length_paths]
-    print(games)
+            games[n] = list(n_length_paths.items())
     save_games(games)
             
         
