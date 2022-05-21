@@ -1,5 +1,5 @@
 import requests
-from synonyms import get_all_synonyms, get_synonyms
+from data.synonym_service import get_all_synonyms, get_synonyms
 from random import sample
 random_word_url = "https://random-word-api.herokuapp.com/word"
 
