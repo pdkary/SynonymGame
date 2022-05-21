@@ -7,33 +7,42 @@ app = Flask(__name__)
 
 activegames = {}
 
+def get_template(state: GameState):
+    return render_template('game.html',
+        difficulty=state.difficulty, 
+        starting_word=state.starting_word, 
+        ending_word=state.ending_word, 
+        current_path=state.path, 
+        current_word = state.current_word, 
+        synonyms = state.current_syns,
+        ideal_path = " -> ".join(state.ideal_path))
+
 @app.route('/')
 def home():
-    return redirect("/newgame")
+    return redirect('/newgame/6')
 
-@app.route('/newgame')
-def newgame():
-    newgame_id = uuid.uuid4()
-    activegames[newgame_id] = GameState()
-    return redirect("/game/" + str(newgame_id))
+@app.route('/newgame/<difficulty>', methods=['GET', 'POST'])
+def newgame(difficulty):
+    addr = request.remote_addr
+    activegames[addr] = GameState(difficulty)
+    return redirect('/game')
 
-@app.route('/game/<id>', methods=['GET'])
-def game(id):
-    game_id = uuid.UUID(id)
-    activegame = activegames[game_id]
-    print(activegame.starting_word,activegame.ending_word)
-    return render_template('game.html', starting_word=activegame.starting_word, ending_word=activegame.ending_word, current_path=activegame.path, current_word = activegame.current_word, synonyms = activegame.current_syns)
+@app.route('/game', methods=['GET', 'POST'])
+def game():
+    addr = request.remote_addr
+    if addr not in activegames:
+        return redirect('/')
+    activegame = activegames[addr]
 
-@app.route('/game/<id>', methods=['POST'])
-def game_post(id):
-    game_id = uuid.UUID(id)
-    activegame = activegames[game_id]
-    try:
-        next_word = request.form['next_word']
-        activegame.guess(next_word)
-    except:
-        activegame.guess('back')
-    return redirect("/game/" + str(game_id))
+    if request.method == 'POST':
+        if 'difficulty' in request.form:
+            return redirect('/newgame/' + request.form['difficulty'])
+        if 'back' in request.form:
+            activegame.back()
+        if 'next_word' in request.form:
+            next_word = request.form['next_word']
+            activegame.guess(next_word)
+    return get_template(activegame)
 
 if __name__ == '__main__':
     # Bind to PORT if defined, otherwise default to 5000.

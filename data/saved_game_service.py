@@ -2,7 +2,7 @@ import json
 from typing import List
 from data.Graph import Graph
 from data.synonym_service import  get_synonym_graph
-
+from random import choice
 
 GAME_FILE = 'data/premade_games.json'
 
@@ -13,6 +13,12 @@ def load_games():
 def save_games(games):
     with open(GAME_FILE, 'w') as gf:
         json.dump(games,gf)
+
+def get_random_game(difficulty: int = 6):
+    games = load_games()[difficulty]
+    game = choice(games)
+    print(game)
+    return game
 
 def get_all_n_length_paths(graph: Graph, n: int):
     all_paths = graph.get_all_shortest_paths()

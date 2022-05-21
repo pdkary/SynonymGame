@@ -1,17 +1,59 @@
-<h1>Synonym Game Prototype</h1>
+<head>
+    <style>
+        .difficulty_buttons > form {
+            display: inline-block;
+        }
+    </style>
+    <script>
+        function showDiv() {
+            document.getElementById('answer_div').style.display = "block";
+            console.log('q');
+        }
+    </script>
+</head>
+<body>
+    <h1>Synonym Game Prototype Difficulty: {{difficulty}}</h1>
 
-<h2>Starting word: {{starting_word}}</h2>
-<h2>Target word: {{ending_word}}</h2>
+    <h2>Change difficulty</h2>
+    <div class="difficulty_buttons">
+        <form method="post">
+            <input type="submit" name="difficulty" value="3">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="4">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="5">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="6">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="7">
+        </form>
+        <form method="post">
+            <input type="submit" name="difficulty" value="8">
+        </form>
+    </div>
+    <h2>Starting word: {{starting_word}}</h2>
+    <h2>Target word: {{ending_word}}</h2>
 
-<h3>Current Path: {{current_path}}</h3>
-<h3>Current Word: {{current_word}}</h3>
-<p>Synonyms: {{synonyms}}</p>
+    <h3>Current Path: {{current_path}}</h3>
+    <h3>Current Word: {{current_word}}</h3>
+    <p>Synonyms: {{synonyms}}</p>
 
-<form method="post">
-    <input name="next_word">
-    <input type="submit">
-</form>
+    <form method="post">
+        <input name="next_word">
+        <input type="submit">
+    </form>
 
-<form method="post">
-    <input type="submit" value="Back">
-</form>
+    <form method="post">
+        <input type="submit" name="back" value="Back">
+    </form>
+
+    <div id="answer_div" style="display:none;" class="answer_div">
+        <p>{{ideal_path}}</p>
+    </div>
+            
+    <input type="button" name="answer" value="Show Solution" onclick="showDiv()" />
+</body>
