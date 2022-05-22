@@ -18,6 +18,7 @@ def save_synonyms(syns):
 def get_syns_and_update(word):
     existing_syns = load_synonyms()
     if word in existing_syns and len(existing_syns[word]) > 0:
+        existing_syns[word].sort()
         return existing_syns[word]
     else:
         out = get_oxford_syns(word)
@@ -25,6 +26,7 @@ def get_syns_and_update(word):
             out = get_synonyms_1(word)
         if len(out) == 0:
             out = get_synonyms_2(word)
+        out.sort()
         existing_syns[word] = out
         save_synonyms(existing_syns)
         return out
@@ -32,7 +34,10 @@ def get_syns_and_update(word):
 def get_oxford_syns(word):
     url = oxford_url + word
     r = requests.get(url, headers=oxford_headers)
-    rj = r.json()
+    try:
+        rj = r.json()
+    except Exception:
+        return []
     syns = []
     if 'error' in rj:
         return []
@@ -44,6 +49,7 @@ def get_oxford_syns(word):
                         for syn in sense['synonyms']:
                             if ' ' not in syn['text']:
                                 syns.append(syn['text'].lower())
+    time.sleep(10)
     return syns
 
 def get_synonyms_1(word):
@@ -83,7 +89,7 @@ def get_synonym_graph() -> Graph:
     return syn_graph
 
 ##bfs
-def get_synonym_tree(word, depth=2):
+def add_tree_to_graph(word, depth=2):
     graph = get_synonym_graph()
     queue = [([], word)]
     current_path_size = 0

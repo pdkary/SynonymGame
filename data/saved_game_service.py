@@ -1,7 +1,7 @@
 import json
 from typing import List
 from data.Graph import Graph
-from data.synonym_service import  get_synonym_graph
+from data.synonym_service import get_synonym_graph, add_tree_to_graph
 from random import choice
 
 GAME_FILE = 'data/premade_games.json'
@@ -33,6 +33,19 @@ def get_all_n_length_paths(graph: Graph, n: int):
                 n_length_paths[source + "->" + target] = path
     return n_length_paths
 
+def update_existing_paths():
+    games = load_games()
+    graph = get_synonym_graph()
+    n_list = list(games.keys())
+    for n in n_list:
+        n_length_paths = get_all_n_length_paths(graph,n)
+        if n in games:
+            for k,v in  n_length_paths.items():
+                games[n].append((k,v))
+        else:
+            games[n] = list(n_length_paths.items())
+    save_games(games)
+
 def update_all_n_length_paths(n_list: List):
     games = load_games()
     graph = get_synonym_graph()
@@ -44,5 +57,9 @@ def update_all_n_length_paths(n_list: List):
         else:
             games[n] = list(n_length_paths.items())
     save_games(games)
-            
+
+def add_new_tree_and_update(word,depth=2):
+    add_tree_to_graph(word,depth)
+    update_existing_paths()
+
         
