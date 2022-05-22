@@ -26,7 +26,7 @@ def render_win_template(state: GameState):
 
 @app.route('/')
 def home():
-    return redirect('/newgame/6')
+    return redirect('/newgame/3')
 
 @app.route('/newgame/<difficulty>', methods=['GET', 'POST'])
 def newgame(difficulty):

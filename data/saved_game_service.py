@@ -12,50 +12,50 @@ def load_games():
 
 def save_games(games):
     with open(GAME_FILE, 'w') as gf:
-        json.dump(games,gf)
+        json.dump(games, gf)
 
-def get_random_game(difficulty: int = 6):
-    games = load_games()[difficulty]
-    game = choice(games)
-    print(game)
-    return game
+def get_random_game(difficulty: int = 3):
+    games = load_games()[str(difficulty)]
+    game = choice(list(games.keys()))
+    return game, games[game]
 
-def get_all_n_length_paths(graph: Graph, n: int):
+def get_all_n_length_paths(graph: Graph, n_list: List[int]):
     all_paths = graph.get_all_shortest_paths()
-    n_length_paths = {}
+    n_length_paths = {n:{} for n in n_list}
     for source in graph.nodes:
         for target in graph.nodes:
             source_paths = all_paths[source]
-            if target not in source_paths:
-                continue
-            path = source_paths[target]
-            if path is not None and len(path) == n:
-                n_length_paths[source + "->" + target] = path
+            if target in source_paths:
+                path = source_paths[target]
+                if str(len(path)) in n_list:
+                    key = source + "->" + target
+                    n_length_paths[str(len(path))][key] = path
+
     return n_length_paths
 
 def update_existing_paths():
     games = load_games()
     graph = get_synonym_graph()
     n_list = list(games.keys())
+    n_length_paths = get_all_n_length_paths(graph,n_list)
     for n in n_list:
-        n_length_paths = get_all_n_length_paths(graph,n)
         if n in games:
-            for k,v in  n_length_paths.items():
-                games[n].append((k,v))
+            for k,v in  n_length_paths[n].items():
+                games[n][k] = v
         else:
-            games[n] = list(n_length_paths.items())
+            games[n] = n_length_paths[n]
     save_games(games)
 
 def update_all_n_length_paths(n_list: List):
     games = load_games()
     graph = get_synonym_graph()
+    n_length_paths = get_all_n_length_paths(graph,n_list)
     for n in n_list:
-        n_length_paths = get_all_n_length_paths(graph,n)
         if n in games:
-            for k,v in  n_length_paths.items():
-                games[n].append((k,v))
+            for k,v in  n_length_paths[n].items():
+                games[n][k] = v
         else:
-            games[n] = list(n_length_paths.items())
+            games[n] = n_length_paths[n]
     save_games(games)
 
 def add_new_tree_and_update(word,depth=2):
